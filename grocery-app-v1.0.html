@@ -1,0 +1,256 @@
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+	const todo = {
+		items: [],
+		init: function(){
+			_$ = this;
+			_$.cacheDom();
+			_$.bindEvents();
+
+		},
+		cacheDom: function(){
+			_$.input = document.querySelector('.enter-item');
+			_$.button = document.querySelector('.add-item');
+			_$.itemsList = document.querySelector('.items-list');
+			_$.totalItems = document.querySelector('.items-number span');
+			_$.counter = 0;
+		},
+		bindEvents: function(){
+			// let counter = 0;
+
+			_$.button.addEventListener('click', _$.addItem, false);
+
+			_$.input.addEventListener('keypress', function(e){
+				if(e.keyCode === 13){
+					_$.addItem();
+				};
+			});
+
+		},
+		addItem: function(){
+
+			if(_$.input.value !== ''){
+					
+					_$.counter++;
+					let newEl = document.createElement('div');
+					newEl.setAttribute('class','items');
+					newEl.innerHTML = `<input type="checkbox" name="item-todo" class="item-todo" ><label data-count=${_$.counter}>${_$.input.value}</label><span class="delete-item">Delete</span>`;
+					_$.itemsList.appendChild(newEl);
+
+					_$.items.push(_$.input.value)
+
+					
+					_$.input.value = '';
+
+
+					// update items
+					_$.updateItems(_$.counter);
+					//activate Delete function
+					_$.deleteItem(_$.counter);
+					_$.itemChecked(newEl, _$.counter);
+
+				}
+		},
+		deleteItem: function(count){
+			let countr = count-1;
+			document.querySelectorAll('.delete-item')[countr].addEventListener('click', function(){
+					this.parentNode.remove();
+					_$.counter--
+					let b = true;
+					_$.updateItems(_$.counter, b);
+					
+
+			})
+
+			
+		},
+		updateItems: function(params, b){
+			_$.totalItems.innerHTML = params;
+			console.log(params);
+			if(params === 1){
+				console.log('one')
+						document.querySelector('.items-number').childNodes[2].deleteData(5,5)
+			}else if(params === 2 && b === undefined) {
+				console.log('two')
+
+						document.querySelector('.items-number').childNodes[2].insertData(5,'s')
+			}	
+
+			if(b !== undefined ){
+				if(params === 1){
+						document.querySelector('.items-number').childNodes[2].deleteData(5,5);
+				}
+			}
+		},
+		itemChecked: function(newEl, params){
+				newEl.firstElementChild.addEventListener('click', function(evt){
+					// evt.preventDefault();
+					// evt.stopPropagation();
+							newEl.firstElementChild.nextElementSibling.classList.toggle('item-checked');
+							console.log(newEl.firstElementChild)
+
+				}, false)
+
+			// newEl.querySelectorAll('.item-todo').forEach(function(it){
+			// 			// it.style.backgroundColor = "red";
+			// 			it.addEventListener('click', function(){
+			// 				it.parentNode.classList.toggle('item-checked')
+			// 			})
+
+			// });
+		}
+
+	}
+
+	document.addEventListener('DOMContentLoaded', function () {
+
+		todo.init();
+
+
+	});
+
+
+
+
+	
+
+</script>
+<body>
+
+<div class="container">
+	<h1>Awesome Grocery App</h1>
+	<div class="form">
+
+		<input type="text" name="enter-item" class="enter-item" placeholder="Type here...">
+		<button class="add-item">Add item</button>
+	</div>
+	<div class="items-list">
+		<div class="items-number">Total: <span>0</span> Items</div>
+	</div>
+</div>
+
+</body>
+<style type="text/css">
+	*{
+	    font-family: monospace;
+	    box-sizing: border-box;
+
+	}
+	body {
+	    width: 980px;
+	    margin: 0 auto;
+	    background: #eeeeee;
+	    font-family: monospace;
+	}
+	h1 {
+	    font-size: 33px;
+	    display: flex;
+	    justify-content: center;
+	    margin: 37px 0 46px;
+	    font-weight: 300;
+	}
+	.form {
+	    display: flex;
+	    justify-content: center;
+	    margin: 20px 0;
+	}
+	input.enter-item {
+	    width: 50%;
+	    height: 50px;
+	    border-radius: 5px 0 0 5px;
+	    font-size: 26px;
+	    padding: 11px;
+	    color: #3F51B5;
+    	border: none;
+	}
+	button.add-item:active {
+	    background: #2a398c;
+
+	}
+	button.add-item {
+	    width: 18%;
+	    font-size: 21px;
+	    background: #3F51B5;
+	    border: none;
+	    color: white;
+	    border-radius: 0px 5px 5px 0;
+	    font-family: monospace;
+	    cursor: pointer;
+
+	}
+	.items-number {
+	    text-align: right;
+	    padding: 10px;
+	    font-size: 18px;
+	}
+	.items-list {
+	    display: flex;
+	    justify-content: center;
+	    flex-direction: column;
+	    width: 68%;
+	    border-radius: 5px;
+	    margin: 0 auto;
+	    
+	}
+	.items {
+	    font-size: 24px;
+	    margin: 5px 0;
+	    position: relative;
+	    background-color: #fafafa;
+	    padding: 12px;
+	    text-transform: capitalize;
+	    transition: background-color 2s ease 0s;
+	}
+	label{
+	    cursor: pointer;
+
+	}
+	input.item-todo {
+    	margin-right: 12px;
+	}
+
+
+	span.delete-item {
+	    position: absolute;
+	    right: 16px;
+	    top: 36%;
+	    color: red;
+	    font-size: 14px;
+	    cursor: pointer;
+	}
+	.item-checked{
+		text-decoration: line-through;
+	}
+	@media (max-width: 550px){
+		body {
+	    	max-width: 100%;
+		}
+		.form{
+			flex-direction: column;
+			padding: 0 12px;
+
+		}
+		input.enter-item{
+			width: 100%;
+		    border-radius: 0;
+
+		}
+		button.add-item{
+			width: 100%;
+			height: 50px;
+		    border-radius: 0;
+		    margin-top: 13px;
+
+		}
+		.items-list{
+			width: 100%;
+			padding: 0 12px;
+
+		}
+	}
+</style>
+</html>
